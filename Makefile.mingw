@@ -1,0 +1,26 @@
+TARGET=x86_64-w64-mingw32-
+CXX=${TARGET}g++
+FLTK_CONFIG=fltk-config
+PKG_CONFIG=${TARGET}pkg-config
+CFLAGS=$(shell ${FLTK_CONFIG} --use-gl --use-images --cflags) $(shell ${PKG_CONFIG} --cflags assimp)
+LDFLAGS=-static-libgcc -static $(shell ${FLTK_CONFIG} --use-gl --use-images --ldstaticflags) $(shell ${PKG_CONFIG} --libs assimp) -lopenctm -lopengl32 -lkernel32 -luser32 -lgdi32 -lole32 -lcomdlg32 -luuid -lcomctl32
+
+all: assimp2ctm.exe
+
+assimp2ctm.exe: main.o glwindow.o mesh.o export.o
+	${CXX} -o assimp2ctm.exe main.o glwindow.o mesh.o export.o ${LDFLAGS}
+
+glwindow.o: glwindow.cpp glwindow.h mesh.h common.h
+	${CXX} -c -o glwindow.o glwindow.cpp ${CFLAGS}
+
+mesh.o: mesh.cpp mesh.h common.h
+	${CXX} -c -o mesh.o mesh.cpp ${CFLAGS}
+
+export.o: export.cpp export.h mesh.h
+	${CXX} -c -o export.o export.cpp ${CFLAGS}
+
+main.o: main.cpp mesh.h glwindow.h common.h export.h
+	${CXX} -c -o main.o main.cpp ${CFLAGS}
+
+clean:
+	rm -f *.o assimp2ctm.exe
