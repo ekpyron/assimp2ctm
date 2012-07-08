@@ -41,7 +41,7 @@ bool export_mesh (const char *filename, Mesh *mesh)
 			{
 				fl_message_title ("File already exists");
 				if (fl_choice ("The file \"%s\" does already exist.\nDo you really "
-											 "want to override it?", "Override", "Cancel", NULL,
+											 "want to overwrite it?", "Override", "Cancel", NULL,
 											 filename))
 					 return false;
 			}
